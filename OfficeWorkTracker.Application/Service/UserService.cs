@@ -40,14 +40,35 @@ namespace OfficeWorkTracker.Application.Service
             throw new NotImplementedException();
         }
 
-        public Task<List<UserResponseDto>> GetAllUserAsync()
+        public async Task<List<UserResponseDto>> GetAllUserAsync()
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetAllAsync();
+            return user.Select(user => new UserResponseDto
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                Email = user.Email,
+                Role = user.Role
+            }).ToList();
         }
 
-        public Task<UserResponseDto> GetUserByIdAsync(Guid id)
+        public async Task<UserResponseDto> GetUserByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new UserResponseDto
+                {
+                    Id = user.Id,
+                    FullName = user.FullName,
+                    Email = user.Email,
+                    Role = user.Role
+                };
+            }
         }
     }
 }

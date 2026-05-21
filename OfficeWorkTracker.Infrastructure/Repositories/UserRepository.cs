@@ -20,16 +20,6 @@ public class UserRepository: IUserRepository
         return user;
     }
 
-    public async Task<List<User>> GetAllAsync()
-    {
-        return await _context.Users.ToListAsync();
-    }
-
-    public async Task<User?> GetByIdAsync(Guid id)
-    {
-        return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
-    }
-
     public async Task DeleteAsync(User user)
     {
         _context.Users.Remove(user);
@@ -37,13 +27,13 @@ public class UserRepository: IUserRepository
         await _context.SaveChangesAsync();
     }
 
-    Task<User?> IUserRepository.GetByIdAsync(Guid id)
+    async Task<User?> IUserRepository.GetByIdAsync(Guid id)
     {
-        throw new NotImplementedException();
+        return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    Task<List<User>> IUserRepository.GetAllAsync()
+    async Task<List<User>> IUserRepository.GetAllAsync()
     {
-        throw new NotImplementedException();
+        return await _context.Users.ToListAsync();
     }
 }

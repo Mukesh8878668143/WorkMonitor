@@ -20,5 +20,23 @@ namespace OfficeWorkTracker.API.Controllers
             var user = await _userService.CreateUserAsync(dto);
             return Ok(user);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserById(Guid id)
+        {
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllUser()
+        {
+            var user = await _userService.GetAllUserAsync();
+            return Ok(user);
+        }
     }
+
 }
