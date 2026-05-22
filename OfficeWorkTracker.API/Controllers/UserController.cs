@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.Interfaces;
 
 namespace OfficeWorkTracker.API.Controllers
@@ -37,6 +38,24 @@ namespace OfficeWorkTracker.API.Controllers
             var user = await _userService.GetAllUserAsync();
             return Ok(user);
         }
-    }
 
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(Guid id, UpdateUserDto dto)
+        {
+            var updatedUser = await _userService.UpdateUserAsync(id, dto);
+            if (updatedUser == null)
+            {
+                return NotFound("User not found");
+            }
+            return Ok(updatedUser);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(Guid id)
+        {
+            var delete = await _userService.DeleteUserAsync(id);
+            if (!delete) { return NotFound(); }
+            return NoContent();
+        }
+    }
 }

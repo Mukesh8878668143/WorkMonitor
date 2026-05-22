@@ -1,4 +1,5 @@
 ﻿using OfficeWorkTracker.Application.DTOs;
+using OfficeWorkTracker.Application.DTOs.Auth;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<UserResponseDto> CreateUserAsync(CreateUserDto dto);
         Task<List<UserResponseDto>> GetAllUserAsync();
         Task<UserResponseDto> GetUserByIdAsync(Guid id);
-        Task DeleteUserAsync(Guid id);
+        Task<bool> DeleteUserAsync(Guid id);
+        Task<UserResponseDto> UpdateUserAsync(Guid id, UpdateUserDto dto);
+
+        Task<AuthResponseDto> LoginAsync(LoginDto dto);
     }
 }

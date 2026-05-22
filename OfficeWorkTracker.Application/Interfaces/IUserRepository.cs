@@ -12,7 +12,9 @@ namespace OfficeWorkTracker.Application
         Task<User?> GetByIdAsync(Guid id);
 
         Task<List<User>> GetAllAsync();
-
+        Task UpdateAsync(User user);
         Task DeleteAsync(User user);
+
+        Task<User?> GetByEmailAsync(string email);
     }
 }

@@ -15,7 +15,7 @@ builder.Services.AddScoped<IUserService, UserService>(); // Register IUserServic
 builder.Services.AddEndpointsApiExplorer(); // Register minimal API endpoint metadata for OpenAPI/Swagger generation
 builder.Services.AddSwaggerGen(); // Register Swagger generator to produce OpenAPI documents
 builder.Services.AddControllers(); // Register MVC controllers with DI so controller endpoints are available
-
+builder.Services.AddScoped<IJwtTokenServices, JwtTokenService>(); // Register IJwtTokenServices with scoped lifetime and concrete JwtTokenService
 var app = builder.Build(); // Build the WebApplication (finalize middleware pipeline and service provider)
 
 if (app.Environment.IsDevelopment()) // Check if the current environment is Development
