@@ -11,5 +11,6 @@ namespace OfficeWorkTracker.Domain.Entities
         public string PasswordHash { get; set; }
         public string Role { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public ICollection<TaskItem> Tasks { get; set; }
     }
 }

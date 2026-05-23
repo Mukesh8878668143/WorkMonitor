@@ -14,5 +14,6 @@ namespace OfficeWorkTracker.Infrastructure.Data
 		}
 
 		public DbSet<User> Users => Set<User>();
-	}
+		public DbSet<TaskItem> Tasks { get; set; }
+    }
 }
