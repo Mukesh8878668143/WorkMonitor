@@ -1,8 +1,6 @@
 ﻿using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Domain.Entities;
-
-
 using Microsoft.AspNetCore.Identity;
 using OfficeWorkTracker.Application.DTOs.Auth;
 namespace OfficeWorkTracker.Application.Service

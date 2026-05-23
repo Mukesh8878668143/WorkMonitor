@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace OfficeWorkTracker.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Employees")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;

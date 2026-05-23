@@ -65,7 +65,8 @@ namespace OfficeWorkTracker.Application.Service
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.UtcNow.AddMinutes(
+                Convert.ToDouble(_configuration["Jwt:DurationInMinutes"])),
                 signingCredentials: credentials
             );
 
