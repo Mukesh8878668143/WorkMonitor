@@ -9,7 +9,7 @@ namespace OfficeWorkTracker.Application
     {
         Task<User> CreateAsync(User user);
 
-        Task<User?> GetByIdAsync(Guid id);
+        Task<User?> GetByIdAsync(int id);
 
         Task<List<User>> GetAllAsync();
         Task UpdateAsync(User user);

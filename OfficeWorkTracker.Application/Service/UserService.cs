@@ -21,7 +21,7 @@ namespace OfficeWorkTracker.Application.Service
 
             var user = new User
             {
-                Id = Guid.NewGuid(),
+                
                 FullName = dto.FullName,
                 Email = dto.Email,
                 Role = "Employees",
@@ -41,7 +41,7 @@ namespace OfficeWorkTracker.Application.Service
             };
         }
 
-        public async Task<bool> DeleteUserAsync(Guid id)
+        public async Task<bool> DeleteUserAsync(int id)
         {
             var user = _userRepository.GetByIdAsync(id);
             if (user == null)
@@ -60,14 +60,14 @@ namespace OfficeWorkTracker.Application.Service
             var user = await _userRepository.GetAllAsync();
             return user.Select(user => new UserResponseDto
             {
-                Id = user.Id,
+                //Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 Role = user.Role
             }).ToList();
         }
 
-        public async Task<UserResponseDto> GetUserByIdAsync(Guid id)
+        public async Task<UserResponseDto> GetUserByIdAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
@@ -78,7 +78,7 @@ namespace OfficeWorkTracker.Application.Service
             {
                 return new UserResponseDto
                 {
-                    Id = user.Id,
+                    //Id = user.Id,
                     FullName = user.FullName,
                     Email = user.Email,
                     Role = user.Role
@@ -86,7 +86,7 @@ namespace OfficeWorkTracker.Application.Service
             }
         }
 
-        public async Task<UserResponseDto> UpdateUserAsync(Guid id, UpdateUserDto dto)
+        public async Task<UserResponseDto> UpdateUserAsync(int id, UpdateUserDto dto)
         {
             var user = await _userRepository.GetByIdAsync(id);
             if (user == null)
@@ -100,7 +100,7 @@ namespace OfficeWorkTracker.Application.Service
                 await _userRepository.UpdateAsync(user);
                 return new UserResponseDto
                 {
-                    Id = user.Id,
+                    //Id = user.Id,
                     FullName = user.FullName,
                     Email = user.Email,
                     Role = user.Role

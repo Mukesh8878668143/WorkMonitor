@@ -12,9 +12,9 @@ namespace OfficeWorkTracker.Application.Interfaces
     {
         Task<UserResponseDto> CreateUserAsync(CreateUserDto dto);
         Task<List<UserResponseDto>> GetAllUserAsync();
-        Task<UserResponseDto> GetUserByIdAsync(Guid id);
-        Task<bool> DeleteUserAsync(Guid id);
-        Task<UserResponseDto> UpdateUserAsync(Guid id, UpdateUserDto dto);
+        Task<UserResponseDto> GetUserByIdAsync(int id);
+        Task<bool> DeleteUserAsync(int id);
+        Task<UserResponseDto> UpdateUserAsync(int id, UpdateUserDto dto);
 
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
     }

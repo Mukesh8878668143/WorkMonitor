@@ -7,6 +7,8 @@ using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Application.Service;
 using OfficeWorkTracker.Infrastructure.Data;
 using Microsoft.OpenApi.Models;
+using OfficeWorkTracker.Application.DTOs.Task;
+using OfficeWorkTracker.Infrastructure.Repositories;
 
 // Create the WebApplicationBuilder, reading configuration, env, and args
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => // Register EF Co
 
 builder.Services.AddScoped<IUserRepository, UserRepository>(); // Register IUserRepository with scoped lifetime and concrete UserRepository
 builder.Services.AddScoped<IUserService, UserService>(); // Register IUserService with scoped lifetime and concrete UserService
+builder.Services.AddScoped<ITaskRespository, TaskRepository>(); // Register ITaskRespository with scoped lifetime and concrete TaskRepository
+builder.Services.AddScoped<ITaskService, TaskService>(); // Register ITaskService with scoped lifetime and concrete TaskService
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // Register minimal API endpoint metadata for OpenAPI/Swagger generation
 

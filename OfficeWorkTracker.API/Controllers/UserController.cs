@@ -25,7 +25,7 @@ namespace OfficeWorkTracker.API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetUserById(int id)
         {
             var user = await _userService.GetUserByIdAsync(id);
             if (user == null)
@@ -42,7 +42,7 @@ namespace OfficeWorkTracker.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(Guid id, UpdateUserDto dto)
+        public async Task<IActionResult> UpdateUser( int id, UpdateUserDto dto)
         {
             var updatedUser = await _userService.UpdateUserAsync(id, dto);
             if (updatedUser == null)
@@ -53,7 +53,7 @@ namespace OfficeWorkTracker.API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             var delete = await _userService.DeleteUserAsync(id);
             if (!delete) { return NotFound(); }
