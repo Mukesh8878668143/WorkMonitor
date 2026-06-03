@@ -10,13 +10,13 @@ namespace OfficeWorkTracker.Application.Service
     {
         private readonly ITaskRespository _taskRespository;
         private readonly IUserRepository _userRepository;
-        
+
         public TaskService(ITaskRespository taskRespository, IUserRepository userRepository)
         {
             _taskRespository = taskRespository;
             _userRepository = userRepository;
         }
-        
+
         public async Task<TaskResponseDto> CreateTaskAsync(CreateTaskDto dto)
         {
             var task = new TaskItem
@@ -32,7 +32,7 @@ namespace OfficeWorkTracker.Application.Service
 
             var Useridcheck = _userRepository.GetByIdAsync(task.UserId);
 
-            if(Useridcheck.Result != null)
+            if (Useridcheck.Result != null)
             {
                 var createdTask = await _taskRespository.CreateAsync(task);
                 return new TaskResponseDto
@@ -51,7 +51,7 @@ namespace OfficeWorkTracker.Application.Service
             {
                 return null;
             }
-            
+
         }
 
         public async Task<bool> DeleteTaskAsync(int id)
@@ -92,6 +92,36 @@ namespace OfficeWorkTracker.Application.Service
                 DueDate = task.DueDate,
                 UserId = task.UserId
             });
+        }
+
+        public async Task<TaskResponseDto> UpdateTaskAsync(int id, UpdateTaskDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Title))
+                throw new ArgumentException("Title cannot be empty.");
+            if (string.IsNullOrWhiteSpace(dto.Description))
+                throw new ArgumentException("Description cannot be empty.");
+            if (dto.DueDate == null)
+                throw new ArgumentException("DueDate cannot be empty.");
+            if (dto.Priority == null)
+                throw new ArgumentException("Priority cannot be empty.");
+            if (dto.Status == null)
+                throw new ArgumentException("Status cannot be empty.");
+
+            var updatedTask = await _taskRespository.UpdateAsync(id, dto);
+            if (updatedTask == null)
+                return null;
+
+            return new TaskResponseDto
+            {
+                Id = updatedTask.Id,
+                Title = updatedTask.Title,
+                Description = updatedTask.Description,
+                Priority = updatedTask.Priority,
+                Status = updatedTask.Status,
+                CreatedDate = updatedTask.CreatedDate,
+                DueDate = updatedTask.DueDate,
+                UserId = updatedTask.UserId
+            };
         }
     }
 }

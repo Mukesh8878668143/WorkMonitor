@@ -17,5 +17,7 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<TaskResponseDto?> GetTaskByIdAsync(int id);
 
         Task<bool> DeleteTaskAsync(int id);
+
+        Task<TaskResponseDto> UpdateTaskAsync(int id, UpdateTaskDto dto);
     }
 }

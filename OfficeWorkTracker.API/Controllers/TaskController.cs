@@ -51,5 +51,15 @@ namespace OfficeWorkTracker.API.Controllers
 
             return Ok("Task deleted successfully");
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateTask(int id, UpdateTaskDto dto)
+        {
+            var result =
+                await _taskService.UpdateTaskAsync(id, dto);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfficeWorkTracker.Application.DTOs.Task;
 using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Domain.Entities;
 using OfficeWorkTracker.Infrastructure.Data;
@@ -42,6 +43,22 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
         public Task<TaskItem?> GetByIdAsync(int id)
         {
            return _context.Tasks.FirstOrDefaultAsync(x=>x.Id == id);
+        }
+
+        public async Task<TaskItem> UpdateAsync(int id, UpdateTaskDto dto)
+        {
+            var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (task == null)
+                return null;
+
+            task.Title = dto.Title;
+            task.Description = dto.Description;
+            task.Status = (Domain.Enum.TaskStatus)dto.Status;
+            task.Priority = (Domain.Enum.TaskPriority)dto.Priority;
+            task.DueDate = dto.DueDate;
+            await _context.SaveChangesAsync();
+            return task;
         }
     }
 }

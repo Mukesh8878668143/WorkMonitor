@@ -1,4 +1,5 @@
-﻿using OfficeWorkTracker.Domain.Entities;
+﻿using OfficeWorkTracker.Application.DTOs.Task;
+using OfficeWorkTracker.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,5 +17,7 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<TaskItem?> GetByIdAsync(int id);
 
         Task<bool> DeleteAsync(int id);
+
+        Task<TaskItem> UpdateAsync(int id, UpdateTaskDto dto);
     }
 }
