@@ -19,5 +19,9 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<bool> DeleteAsync(int id);
 
         Task<TaskItem> UpdateAsync(int id, UpdateTaskDto dto);
+        Task<int> GetTotalTasksByUserAsync(int id);
+        Task<int> GetPendingTaskByUserAsync(int id);
+        Task<int> GetInProgressTaskByUserAsync(int id);
+        Task<int> GetCompletedTaskByUserAsync(int id);
     }
 }

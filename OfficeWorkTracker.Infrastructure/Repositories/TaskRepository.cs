@@ -45,6 +45,26 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
            return _context.Tasks.FirstOrDefaultAsync(x=>x.Id == id);
         }
 
+        public Task<int> GetCompletedTaskByUserAsync(int id)
+        {
+            return _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.TaskStatus.Completed);
+        }
+
+        public async Task<int> GetInProgressTaskByUserAsync(int id)
+        {
+            return await _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.TaskStatus.InProgress);
+        }
+
+        public async Task<int> GetPendingTaskByUserAsync(int id)
+        {
+            return await _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.TaskStatus.pending);
+        }
+
+        public async Task<int> GetTotalTasksByUserAsync(int id)
+        {
+            return await _context.Tasks.CountAsync(x => x.UserId == id);
+        }
+
         public async Task<TaskItem> UpdateAsync(int id, UpdateTaskDto dto)
         {
             var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);

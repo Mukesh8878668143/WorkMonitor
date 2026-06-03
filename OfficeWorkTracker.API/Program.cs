@@ -9,6 +9,7 @@ using OfficeWorkTracker.Infrastructure.Data;
 using Microsoft.OpenApi.Models;
 using OfficeWorkTracker.Application.DTOs.Task;
 using OfficeWorkTracker.Infrastructure.Repositories;
+using OfficeWorkTracker.API.Middleware;
 
 // Create the WebApplicationBuilder, reading configuration, env, and args
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>(); // Register IUser
 builder.Services.AddScoped<IUserService, UserService>(); // Register IUserService with scoped lifetime and concrete UserService
 builder.Services.AddScoped<ITaskRespository, TaskRepository>(); // Register ITaskRespository with scoped lifetime and concrete TaskRepository
 builder.Services.AddScoped<ITaskService, TaskService>(); // Register ITaskService with scoped lifetime and concrete TaskService
+builder.Services.AddScoped<IDashboardService, Dashboards>(); // Register IDashboardService with scoped lifetime and concrete Dashboards
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // Register minimal API endpoint metadata for OpenAPI/Swagger generation
 
@@ -61,7 +63,6 @@ builder.Services.AddSwaggerGen(option =>
 }); 
 
 builder.Services.AddScoped<IJwtTokenServices, JwtTokenService>(); // Register IJwtTokenServices with scoped lifetime and concrete JwtTokenService
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme =
@@ -121,6 +122,8 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization(); // Register authorization services to enable policy-based authorization
 
 var app = builder.Build(); // Build the WebApplication (finalize middleware pipeline and service provider)
+
+app.UseMiddleware<ExceptionMiddleware>(); // Register custom middleware for global exception handling
 
 if (app.Environment.IsDevelopment()) // Check if the current environment is Development
 {
