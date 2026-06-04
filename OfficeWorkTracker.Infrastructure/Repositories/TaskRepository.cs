@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OfficeWorkTracker.Application.DTOs.Task;
+using OfficeWorkTracker.Application.Exception;
 using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Domain.Entities;
 using OfficeWorkTracker.Infrastructure.Data;
@@ -29,7 +30,7 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
         {
             var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
             if(task == null)
-                return false;  
+                throw new NotFoundExecption("Task not found");  
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
             return true;

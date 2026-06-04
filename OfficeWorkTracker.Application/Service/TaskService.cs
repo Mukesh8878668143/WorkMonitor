@@ -1,5 +1,6 @@
 ﻿using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.DTOs.Task;
+using OfficeWorkTracker.Application.Exception;
 using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Domain.Entities;
 using OfficeWorkTracker.Domain.Enum;
@@ -49,7 +50,7 @@ namespace OfficeWorkTracker.Application.Service
             }
             else
             {
-                return null;
+               throw new NotFoundExecption("User Not found.");
             }
 
         }
@@ -97,19 +98,18 @@ namespace OfficeWorkTracker.Application.Service
         public async Task<TaskResponseDto> UpdateTaskAsync(int id, UpdateTaskDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Title))
-                throw new ArgumentException("Title cannot be empty.");
+                throw new ValidationException("Title cannot be empty.");
             if (string.IsNullOrWhiteSpace(dto.Description))
-                throw new ArgumentException("Description cannot be empty.");
+                throw new ValidationException("Description cannot be empty.");
             if (dto.DueDate == null)
-                throw new ArgumentException("DueDate cannot be empty.");
+                throw new ValidationException("DueDate cannot be empty.");
             if (dto.Priority == null)
-                throw new ArgumentException("Priority cannot be empty.");
+                throw new ValidationException("Priority cannot be empty.");
             if (dto.Status == null)
-                throw new ArgumentException("Status cannot be empty.");
-
+                throw new ValidationException("Status cannot be empty.");
             var updatedTask = await _taskRespository.UpdateAsync(id, dto);
             if (updatedTask == null)
-                return null;
+                throw new NotFoundExecption("Task not found.");
 
             return new TaskResponseDto
             {

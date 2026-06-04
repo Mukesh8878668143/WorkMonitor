@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using OfficeWorkTracker.Application.Exception;
+using System.Net;
 using System.Text.Json;
 
 namespace OfficeWorkTracker.API.Middleware
@@ -19,20 +21,29 @@ namespace OfficeWorkTracker.API.Middleware
             }
             catch (Exception ex)
             {
-                context.Response.ContentType = "application/json";
-
-                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-
-                var response = new
-                {
-                    Sucess = false,
-                    Message = ex.Message,
-                    Details = ex.StackTrace
-                };
-
-                var json = JsonSerializer.Serialize(response);
-                await context.Response.WriteAsync(json);
+                await HandleExceptionAsync(context, ex);
             }
+        }
+        private static async Task HandleExceptionAsync(HttpContext context,Exception exception)
+        {
+            context.Response.ContentType = "application/json";
+
+            var statusCode = exception switch 
+            {
+                ValidationException => StatusCodes.Status400BadRequest,
+                NotFoundExecption => StatusCodes.Status404NotFound,
+                _ => StatusCodes.Status500InternalServerError
+            };
+
+            context.Response.StatusCode = statusCode;
+
+            var response = new { 
+                Sucess = false,
+                Message = exception.Message
+            };
+
+            var json = JsonSerializer.Serialize(response);
+            await context.Response.WriteAsync(json);
         }
     }
 }

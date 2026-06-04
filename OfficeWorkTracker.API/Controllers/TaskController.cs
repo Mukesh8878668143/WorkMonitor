@@ -1,9 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using OfficeWorkTracker.Application.Common;
 using OfficeWorkTracker.Application.DTOs.Task;
+using OfficeWorkTracker.Application.Exception;
 using OfficeWorkTracker.Application.Interfaces;
+using OfficeWorkTracker.Domain.Constants;
 
 namespace OfficeWorkTracker.API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TaskController : ControllerBase
@@ -35,11 +40,11 @@ namespace OfficeWorkTracker.API.Controllers
                 await _taskService.GetTaskByIdAsync(id);
 
             if (result == null)
-                return NotFound();
+                throw new NotFoundExecption("Task not found in Repository.");
 
-            return Ok(result);
+            return Ok(ApiResponseFactory.Success(result, "Task retrieved successfully."));
         }
-
+        [Authorize(Roles = Roles.Admin)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {
