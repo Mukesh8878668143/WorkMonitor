@@ -4,18 +4,23 @@ using OfficeWorkTracker.Application.Exception;
 using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Domain.Entities;
 using OfficeWorkTracker.Domain.Enum;
+using System.Runtime.InteropServices;
+using TaskStatus = OfficeWorkTracker.Domain.Enum.TaskStatus;
 
 namespace OfficeWorkTracker.Application.Service
 {
+    
     public class TaskService : ITaskService
     {
         private readonly ITaskRespository _taskRespository;
         private readonly IUserRepository _userRepository;
+        private readonly ICurrentUserService _currentUserService;
 
-        public TaskService(ITaskRespository taskRespository, IUserRepository userRepository)
+        public TaskService(ITaskRespository taskRespository, IUserRepository userRepository, ICurrentUserService currentUserService)
         {
             _taskRespository = taskRespository;
             _userRepository = userRepository;
+            _currentUserService = currentUserService;
         }
 
         public async Task<TaskResponseDto> CreateTaskAsync(CreateTaskDto dto)
@@ -122,6 +127,88 @@ namespace OfficeWorkTracker.Application.Service
                 DueDate = updatedTask.DueDate,
                 UserId = updatedTask.UserId
             };
+        }
+
+        public async Task<TaskResponseDto> AssignTaskAsync(AssignTaskRequestDto request)
+        {
+            var user = await _userRepository.GetByIdAsync(request.AssignedToUserID);
+            if(user == null)
+            {
+                throw new NotFoundExecption("User not found.");
+            }
+
+            var task = new TaskItem
+            {
+                Title = request.Title,
+                Description = request.Description.ToString(),
+                Priority = Enum.Parse<TaskPriority>(request.Priority, true),
+                DueDate = request.DueDate,
+                UserId = request.AssignedToUserID,
+                Status = TaskStatus.pending,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            await _taskRespository.CreateAsync(task);
+
+            return new TaskResponseDto{
+                Id = task.Id,
+                Title = task.Title,
+                Description = task.Description,
+                Priority = task.Priority,
+                Status = task.Status,
+                CreatedDate = task.CreatedDate,
+                DueDate = task.DueDate,
+                UserId = task.UserId
+            };
+        }
+
+        Task<TaskResponseDto> ITaskService.CreateTaskAsync(CreateTaskDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> ITaskService.DeleteTaskAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<List<TaskResponseDto>> ITaskService.GetAllTasksAsync()
+        {
+            var tasks = _taskRespository.GetAllAsync().Result;
+
+            return Task.FromResult(tasks.Select(t => new TaskResponseDto
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                Priority = t.Priority,
+                Status = t.Status,
+                CreatedDate = t.CreatedDate,
+                DueDate = t.DueDate,
+                UserId = t.UserId
+            }).ToList());
+        }
+
+        Task<TaskResponseDto?> ITaskService.GetTaskByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<TaskResponseDto> ITaskService.UpdateTaskAsync(int id, UpdateTaskDto dto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task UpdateTaskStatusAsync(int taskid, UpdateTaskStatusDto dto)
+        {
+            var task =await  _taskRespository.GetByIdAsync(taskid);
+            if (task == null)
+                throw new NotFoundExecption("Task not found.");
+            var currentUserID = _currentUserService.UserId;
+            if(task.UserId != currentUserID)
+                throw new UnauthorizedAccessException("You are not authorized to update this task.");
+            task.Status = (TaskStatus)dto.Status;
+            await _taskRespository.UpdateAsync(task);
         }
     }
 }

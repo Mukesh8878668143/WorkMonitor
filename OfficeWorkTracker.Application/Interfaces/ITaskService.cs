@@ -1,4 +1,5 @@
-﻿using OfficeWorkTracker.Application.DTOs.Task;
+﻿using OfficeWorkTracker.Application.DTOs;
+using OfficeWorkTracker.Application.DTOs.Task;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,9 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<bool> DeleteTaskAsync(int id);
 
         Task<TaskResponseDto> UpdateTaskAsync(int id, UpdateTaskDto dto);
+
+        Task<TaskResponseDto> AssignTaskAsync(AssignTaskRequestDto dto);
+
+        Task UpdateTaskStatusAsync(int taskid, UpdateTaskStatusDto dto);
     }
 }

@@ -81,5 +81,11 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return task;
         }
+
+        public async Task UpdateAsync(TaskItem task)
+        {
+            _context.Tasks.Update(task);
+            await _context.SaveChangesAsync();
+        }
     }
 }

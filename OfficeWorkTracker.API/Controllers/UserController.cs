@@ -2,12 +2,13 @@
 using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using OfficeWorkTracker.Domain.Constants;
 
 namespace OfficeWorkTracker.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Employees")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -17,6 +18,7 @@ namespace OfficeWorkTracker.API.Controllers
             _userService = userService;
         }
 
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Manager}")]
         [HttpPost]
         public async Task<IActionResult> CreateUser(CreateUserDto dto)
         {
@@ -34,6 +36,7 @@ namespace OfficeWorkTracker.API.Controllers
             }
             return Ok(user);
         }
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Manager}")]
         [HttpGet]
         public async Task<IActionResult> GetAllUser()
         {
@@ -51,7 +54,7 @@ namespace OfficeWorkTracker.API.Controllers
             }
             return Ok(updatedUser);
         }
-
+        [Authorize(Roles = Roles.Admin)]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {

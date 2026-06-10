@@ -19,13 +19,13 @@ namespace OfficeWorkTracker.API.Controllers
         }
 
         [Authorize(Roles =$"{Roles.Admin},{Roles.Manager}")]
-        [HttpGet("user/{userId}")]
+        [HttpGet]
         public async Task<IActionResult> GetDashboardSummary(int userId)
         {
             var summary = await _dashboardService.GetDashboardSummaryAsync(userId);
             return Ok(summary);
         }
-        [Authorize]
+        
         [HttpGet("My")]
         public async Task<IActionResult> GetMyDashboard()
         {

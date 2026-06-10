@@ -60,7 +60,7 @@ namespace OfficeWorkTracker.Application.Service
             var user = await _userRepository.GetAllAsync();
             return user.Select(user => new UserResponseDto
             {
-                //Id = user.Id,
+                Id = user.Id,
                 FullName = user.FullName,
                 Email = user.Email,
                 Role = user.Role

@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using OfficeWorkTracker.Application.Common;
+using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.DTOs.Task;
 using OfficeWorkTracker.Application.Exception;
 using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Domain.Constants;
+using System.Security.Claims;
 
 namespace OfficeWorkTracker.API.Controllers
 {
@@ -65,6 +67,31 @@ namespace OfficeWorkTracker.API.Controllers
             if (result == null)
                 return NotFound();
             return Ok(result);
+        }
+
+        [Authorize]
+        [HttpGet("My")]
+        public async Task<IActionResult> GetMyTask()
+        {
+            var userid = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+            var result = await _taskService.GetTaskByIdAsync(userid);
+
+            return Ok(result);
+        }
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Manager}")]
+        [HttpPost("assign")]
+        public async Task<IActionResult> AssignTask(AssignTaskRequestDto request)
+        {
+            var result = await _taskService.AssignTaskAsync(request);
+            return Ok(ApiResponseFactory.Success(result, "Task assigned successfully"));
+        }
+        [Authorize]
+        [HttpPost("{id}/status")]
+        public async Task<IActionResult> UpdateTaskStatus(int id, UpdateTaskStatusDto dto)
+        {
+            await _taskService.UpdateTaskStatusAsync(id, dto);
+            return Ok(ApiResponseFactory.Success<Object>(null, "Task status updated successfully"));
+
         }
     }
 }

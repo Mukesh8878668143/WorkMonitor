@@ -23,5 +23,6 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<int> GetPendingTaskByUserAsync(int id);
         Task<int> GetInProgressTaskByUserAsync(int id);
         Task<int> GetCompletedTaskByUserAsync(int id);
+        Task UpdateAsync(TaskItem task);
     }
 }
