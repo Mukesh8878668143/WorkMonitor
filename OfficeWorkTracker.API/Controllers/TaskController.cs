@@ -91,7 +91,14 @@ namespace OfficeWorkTracker.API.Controllers
         {
             await _taskService.UpdateTaskStatusAsync(id, dto);
             return Ok(ApiResponseFactory.Success<Object>(null, "Task status updated successfully"));
+        }
 
+        [Authorize]
+        [HttpPost("{taskId}/comment")]
+        public async Task<IActionResult> AddComment(int taskId, AddCommentDto request)
+        {
+            await _taskService.AddCommentAsync(taskId, request);
+            return Ok(ApiResponseFactory.Success<object>(null,"Comment added successfully"));
         }
     }
 }

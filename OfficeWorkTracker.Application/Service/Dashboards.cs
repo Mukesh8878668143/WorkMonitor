@@ -1,32 +1,56 @@
 ﻿using OfficeWorkTracker.Application.DTOs.Dasboard;
 using OfficeWorkTracker.Application.Interfaces;
+using OfficeWorkTracker.Domain.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using TaskStatus = OfficeWorkTracker.Domain.Enum.TaskStatus;
 
 namespace OfficeWorkTracker.Application.Service
 {
-    public class Dashboards:IDashboardService
+    public class Dashboards : IDashboardService
     {
-        private readonly ITaskRespository _taskRespository;
-
-        public Dashboards(ITaskRespository taskRespository)
+        private readonly ITaskRespository _taskRepository;
+        private readonly IUserRepository _userRepository;
+        public Dashboards(ITaskRespository taskRespository, IUserRepository userRepository)
         {
-            _taskRespository = taskRespository;
+            _taskRepository = taskRespository;
+            _userRepository = userRepository;
         }
 
         public async Task<DashboardSummaryDto> GetDashboardSummaryAsync(int userid)
         {
             return new DashboardSummaryDto
             {
-                TotalTasks = await _taskRespository.GetTotalTasksByUserAsync(userid),
-                PendingTasks = await _taskRespository.GetPendingTaskByUserAsync(userid),
-                InProgressTasks = await _taskRespository.GetInProgressTaskByUserAsync(userid),
-                CompletedTasks = await _taskRespository.GetCompletedTaskByUserAsync(userid)
+                TotalTasks = await _taskRepository.GetTotalTasksByUserAsync(userid),
+                PendingTasks = await _taskRepository.GetPendingTaskByUserAsync(userid),
+                InProgressTasks = await _taskRepository.GetInProgressTaskByUserAsync(userid),
+                CompletedTasks = await _taskRepository.GetCompletedTaskByUserAsync(userid)
             };
         }
+        public async Task<TeamDashboardDto> GetTeamDashboardAsync()
+        {
+            return new TeamDashboardDto
+            {
+                TotalEmployees = await _userRepository.GetTotalUserCountAsync(),
+                TotalTasks = await _taskRepository.GetTotalTaskCountAsync(),
+                PendingTasks = await _taskRepository.GetTaskCountByStatusAsync(Domain.Enum.TaskStatus.pending),
+                InProgressTasks =
+            await _taskRepository
+                .GetTaskCountByStatusAsync(
+                    TaskStatus.InProgress),
 
+                CompletedTasks =
+            await _taskRepository
+                .GetTaskCountByStatusAsync(
+                    TaskStatus.Completed),
+
+                BlockedTasks =
+                await _taskRepository
+                    .GetTaskCountByStatusAsync(
+                        TaskStatus.Blocked)
+            };
+        }
     }
 }

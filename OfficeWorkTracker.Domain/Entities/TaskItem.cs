@@ -22,5 +22,7 @@ namespace OfficeWorkTracker.Domain.Entities
 
         // Navigation Property
         public User User { get; set; }
+
+        public ICollection<TaskComment> Comments { get; set; } = new List<TaskComment>();
     }
 }

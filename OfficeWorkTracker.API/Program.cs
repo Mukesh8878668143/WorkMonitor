@@ -25,6 +25,7 @@ builder.Services.AddScoped<ITaskRespository, TaskRepository>(); // Register ITas
 builder.Services.AddScoped<ITaskService, TaskService>(); // Register ITaskService with scoped lifetime and concrete TaskService
 builder.Services.AddScoped<IDashboardService, Dashboards>(); // Register IDashboardService with scoped lifetime and concrete Dashboards
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer(); // Register minimal API endpoint metadata for OpenAPI/Swagger generation
 

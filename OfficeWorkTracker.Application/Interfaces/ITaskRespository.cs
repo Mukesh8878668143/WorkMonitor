@@ -24,5 +24,16 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<int> GetInProgressTaskByUserAsync(int id);
         Task<int> GetCompletedTaskByUserAsync(int id);
         Task UpdateAsync(TaskItem task);
+
+        Task<int> GetTotalTaskCountAsync();
+
+        Task<int> GetTaskCountByStatusAsync(Domain.Enum.TaskStatus status);
+
+        /// <summary>
+        /// Method to add a comment to a task. This will create a new TaskComment entity and associate it with the specified task.
+        /// </summary>
+        /// <param name="comment">The TaskComment entity to be added.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task AddCommentAsync(TaskComment comment);
     }
 }

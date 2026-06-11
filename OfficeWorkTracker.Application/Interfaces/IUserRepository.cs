@@ -16,5 +16,6 @@ namespace OfficeWorkTracker.Application
         Task DeleteAsync(User user);
 
         Task<User?> GetByEmailAsync(string email);
+        Task<int> GetTotalUserCountAsync();
     }
 }

@@ -12,5 +12,6 @@ namespace OfficeWorkTracker.Domain.Enum
         InProgress =2,
         Completed =3,
         Hold =4,
+        Blocked=5
     }
 }

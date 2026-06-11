@@ -5,5 +5,7 @@ namespace OfficeWorkTracker.Application.Interfaces
     public interface IDashboardService
     {
         Task<DashboardSummaryDto> GetDashboardSummaryAsync(int userId);
+
+        Task<TeamDashboardDto> GetTeamDashboardAsync();
     }
 }

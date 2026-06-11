@@ -87,5 +87,22 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
             _context.Tasks.Update(task);
             await _context.SaveChangesAsync();
         }
+        public async Task<int> GetTotalTaskCountAsync()
+        {
+            return await _context.Tasks.CountAsync();
+        }
+
+        public async Task<int> GetTaskCountByStatusAsync(Domain.Enum.TaskStatus status)
+        {
+            return await _context.Tasks.CountAsync(x => x.Status == status);
+        }
+
+        public async Task AddCommentAsync(TaskComment comment)
+        {
+            await _context.TaskComments.AddAsync(comment);
+
+            await _context.SaveChangesAsync();
+        }
+        
     }
 }

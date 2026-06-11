@@ -2,6 +2,7 @@
 using OfficeWorkTracker.Application.DTOs.Task;
 using OfficeWorkTracker.Application.Exception;
 using OfficeWorkTracker.Application.Interfaces;
+using OfficeWorkTracker.Domain.Constants;
 using OfficeWorkTracker.Domain.Entities;
 using OfficeWorkTracker.Domain.Enum;
 using System.Runtime.InteropServices;
@@ -204,11 +205,31 @@ namespace OfficeWorkTracker.Application.Service
             var task =await  _taskRespository.GetByIdAsync(taskid);
             if (task == null)
                 throw new NotFoundExecption("Task not found.");
+
             var currentUserID = _currentUserService.UserId;
-            if(task.UserId != currentUserID)
+            var currentRole = _currentUserService.Role;
+
+            if(currentRole != Roles.Admin && currentRole != Roles.Manager && task.UserId != currentUserID)
                 throw new UnauthorizedAccessException("You are not authorized to update this task.");
             task.Status = (TaskStatus)dto.Status;
             await _taskRespository.UpdateAsync(task);
+        }
+
+        public async Task AddCommentAsync(int taskId, AddCommentDto request)
+        {
+            var task = await _taskRespository.GetByIdAsync(taskId);
+            if(task == null)
+            {
+                throw new NotFoundExecption($"Task {taskId} not found");
+            }
+            var comment = new TaskComment
+            {
+                TaskId = taskId,
+                Comment = request.Comment,
+                UserId = _currentUserService.UserId,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _taskRespository.AddCommentAsync(comment);
         }
     }
 }

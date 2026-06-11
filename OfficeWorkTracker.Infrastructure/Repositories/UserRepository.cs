@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using OfficeWorkTracker.Application;
 using OfficeWorkTracker.Domain.Entities;
 using OfficeWorkTracker.Infrastructure.Data;
-public class UserRepository: IUserRepository
+public class UserRepository : IUserRepository
 {
     private ApplicationDbContext _context;
 
@@ -29,7 +29,7 @@ public class UserRepository: IUserRepository
 
     async Task<User?> IUserRepository.GetByIdAsync(int id)
     {
-        
+
         return await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -48,5 +48,10 @@ public class UserRepository: IUserRepository
     public async Task<User?> GetByEmailAsync(string email)
     {
         return await _context.Users.FirstOrDefaultAsync(x => x.Email == email);
+    }
+
+    public async Task<int> GetTotalUserCountAsync()
+    {
+        return await _context.Users.CountAsync();
     }
 }

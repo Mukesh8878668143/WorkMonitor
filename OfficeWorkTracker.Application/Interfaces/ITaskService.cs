@@ -24,5 +24,7 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<TaskResponseDto> AssignTaskAsync(AssignTaskRequestDto dto);
 
         Task UpdateTaskStatusAsync(int taskid, UpdateTaskStatusDto dto);
+
+        Task AddCommentAsync(int taskId, AddCommentDto request);
     }
 }
