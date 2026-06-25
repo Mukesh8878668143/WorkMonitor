@@ -52,5 +52,75 @@ namespace OfficeWorkTracker.Application.Service
                         WorkTaskStatus.Blocked)
             };
         }
+
+        public async Task<List<EmployerPerformanceDto>> GetEmployerPerformanceAsync()
+        {
+            var tasks =
+         await _taskRepository
+             .GetAllTaskWithUserAsync();
+
+            var result = tasks
+                .GroupBy(x => new
+                {
+                    x.UserId,
+                    x.User.FullName
+                })
+                .Select(g => new EmployerPerformanceDto
+                {
+                    UserId = g.Key.UserId,
+
+                    EmployeeName =
+                        g.Key.FullName,
+
+                    TotalTasks = g.Count(),
+
+                    CompletedTasks =
+                        g.Count(x =>
+                            x.Status ==
+                            WorkTaskStatus.Completed),
+
+                    PendingTasks =
+                        g.Count(x =>
+                            x.Status ==
+                            WorkTaskStatus.Pending),
+
+                    InProgressTasks =
+                        g.Count(x =>
+                            x.Status ==
+                            WorkTaskStatus.InProgress),
+
+                    BlockedTasks =
+                        g.Count(x =>
+                            x.Status ==
+                            WorkTaskStatus.Blocked),
+
+                    HoldTasks = 
+                    g.Count(x =>
+                        x.Status ==
+                        WorkTaskStatus.Hold),
+
+                    OverdueTasks = 
+                    g.Count(x 
+                        => x.DueDate.HasValue &&
+                        x.DueDate.Value.Date < DateTime.UtcNow.Date &&
+                        x.Status != WorkTaskStatus.Completed),
+
+                    CompletionPercentage =
+                        g.Count() == 0
+                        ? 0
+                        : Math.Round(
+                            (double)
+                            g.Count(x =>
+                                x.Status ==
+                                WorkTaskStatus.Completed)
+                            / g.Count() * 100,
+                            2)
+                })
+                .OrderByDescending(
+                    x => x.CompletionPercentage)
+                .ToList();
+
+            return result;
+        }
     }
 }

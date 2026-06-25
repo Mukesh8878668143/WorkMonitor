@@ -119,5 +119,10 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<TaskItem>> GetAllTaskWithUserAsync()
+        {
+            return await _context.Tasks.Include(x => x.User).ToListAsync();
+        }
     }   
 }

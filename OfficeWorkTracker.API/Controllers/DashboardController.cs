@@ -53,5 +53,16 @@ namespace OfficeWorkTracker.API.Controllers
             summary,
             "Team dashboard retrieved successfully"));
         }
+
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpGet("employee-performance")]
+        public async Task<IActionResult> GetEmployeePerformance()
+        {
+            var result = await _dashboardService.GetEmployerPerformanceAsync();
+            return Ok(
+        ApiResponseFactory.Success(
+            result,
+            "Employee performance retrieved successfully"));
+        }
     }
 }

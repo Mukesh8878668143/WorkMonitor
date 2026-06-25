@@ -38,5 +38,6 @@ namespace OfficeWorkTracker.Application.Interfaces
 
         Task AddActivityAsnyc(TaskActivity activity);
         Task<List<TaskActivity>> GetTaskActivitiesAsync(int taskid);
+        Task<List<TaskItem>> GetAllTaskWithUserAsync();
     }
 }
