@@ -98,7 +98,14 @@ namespace OfficeWorkTracker.API.Controllers
         public async Task<IActionResult> AddComment(int taskId, AddCommentDto request)
         {
             await _taskService.AddCommentAsync(taskId, request);
-            return Ok(ApiResponseFactory.Success<object>(null,"Comment added successfully"));
+            return Ok(ApiResponseFactory.Success<object>(null, "Comment added successfully"));
+        }
+
+        [HttpGet("{taskId}/History")]
+        public async Task<IActionResult> GetTaskHistory(int taskId)
+        {
+            var result = await _taskService.GetTaskHistoryAsync(taskId);
+            return Ok(ApiResponseFactory.Success(result, "Task history retrieved successfully"));
         }
     }
 }

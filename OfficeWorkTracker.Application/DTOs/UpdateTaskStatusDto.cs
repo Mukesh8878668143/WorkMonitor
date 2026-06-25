@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using WorkTaskStatus = OfficeWorkTracker.Domain.Enum.WorkTaskStatus;
 
 namespace OfficeWorkTracker.Application.DTOs
 {
     public class UpdateTaskStatusDto
     {
-        public TaskStatus Status { get; set; } 
+        public WorkTaskStatus Status { get; set; } 
     }
 }

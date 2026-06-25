@@ -26,5 +26,7 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task UpdateTaskStatusAsync(int taskid, UpdateTaskStatusDto dto);
 
         Task AddCommentAsync(int taskId, AddCommentDto request);
+
+        Task<List<TaskActivityDto>> GetTaskHistoryAsync(int taskid);
     }
 }

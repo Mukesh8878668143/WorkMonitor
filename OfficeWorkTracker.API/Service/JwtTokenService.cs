@@ -47,7 +47,7 @@ namespace OfficeWorkTracker.Application.Service
             // Important: Claims establish identity and roles used by authorization policies later.
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role)
             };

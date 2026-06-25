@@ -26,7 +26,10 @@ builder.Services.AddScoped<ITaskService, TaskService>(); // Register ITaskServic
 builder.Services.AddScoped<IDashboardService, Dashboards>(); // Register IDashboardService with scoped lifetime and concrete Dashboards
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+});
+
 builder.Services.AddEndpointsApiExplorer(); // Register minimal API endpoint metadata for OpenAPI/Swagger generation
 
 // Register Swagger generator to produce OpenAPI documents

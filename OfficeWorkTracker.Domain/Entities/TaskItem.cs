@@ -9,7 +9,7 @@ namespace OfficeWorkTracker.Domain.Entities
 
         public string? Description { get; set; }
 
-        public Enum.TaskStatus Status { get; set; }
+        public Enum.WorkTaskStatus Status { get; set; }
 
         public TaskPriority Priority { get; set; }
 
@@ -24,5 +24,7 @@ namespace OfficeWorkTracker.Domain.Entities
         public User User { get; set; }
 
         public ICollection<TaskComment> Comments { get; set; } = new List<TaskComment>();
+
+        public ICollection<TaskActivity> Activities { get; set; } = new List<TaskActivity>();
     }
 }

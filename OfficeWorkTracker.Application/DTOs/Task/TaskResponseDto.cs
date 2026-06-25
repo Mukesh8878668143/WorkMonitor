@@ -1,5 +1,5 @@
 ﻿using OfficeWorkTracker.Domain.Enum;
-using TaskStatus = OfficeWorkTracker.Domain.Enum.TaskStatus;
+using WorkTaskStatus = OfficeWorkTracker.Domain.Enum.WorkTaskStatus;
 
 namespace OfficeWorkTracker.Application.DTOs.Task
 {
@@ -11,7 +11,7 @@ namespace OfficeWorkTracker.Application.DTOs.Task
 
         public string Description { get; set; }
 
-        public TaskStatus Status { get; set; }
+        public WorkTaskStatus Status { get; set; }
 
         public TaskPriority Priority { get; set; }
 

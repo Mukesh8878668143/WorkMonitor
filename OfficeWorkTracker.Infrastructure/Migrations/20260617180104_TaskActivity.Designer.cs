@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OfficeWorkTracker.Infrastructure.Data;
 
@@ -11,9 +12,11 @@ using OfficeWorkTracker.Infrastructure.Data;
 namespace OfficeWorkTracker.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260617180104_TaskActivity")]
+    partial class TaskActivity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,39 +24,6 @@ namespace OfficeWorkTracker.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("OfficeWorkTracker.Domain.Entities.TaskActivity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ActivityType")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TaskId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TaskId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("TaskActivities");
-                });
 
             modelBuilder.Entity("OfficeWorkTracker.Domain.Entities.TaskComment", b =>
                 {
@@ -156,25 +126,6 @@ namespace OfficeWorkTracker.Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("OfficeWorkTracker.Domain.Entities.TaskActivity", b =>
-                {
-                    b.HasOne("OfficeWorkTracker.Domain.Entities.TaskItem", "Task")
-                        .WithMany("Activities")
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("OfficeWorkTracker.Domain.Entities.User", "User")
-                        .WithMany("Activities")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Task");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("OfficeWorkTracker.Domain.Entities.TaskComment", b =>
                 {
                     b.HasOne("OfficeWorkTracker.Domain.Entities.TaskItem", null)
@@ -201,15 +152,11 @@ namespace OfficeWorkTracker.Infrastructure.Migrations
 
             modelBuilder.Entity("OfficeWorkTracker.Domain.Entities.TaskItem", b =>
                 {
-                    b.Navigation("Activities");
-
                     b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("OfficeWorkTracker.Domain.Entities.User", b =>
                 {
-                    b.Navigation("Activities");
-
                     b.Navigation("Comments");
 
                     b.Navigation("Tasks");

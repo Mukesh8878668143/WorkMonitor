@@ -15,7 +15,7 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
     public class TaskRepository : ITaskRespository
     {
         private readonly ApplicationDbContext _context;
-        public TaskRepository(ApplicationDbContext context) 
+        public TaskRepository(ApplicationDbContext context)
         {
             _context = context;
         }
@@ -29,8 +29,8 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
         public async Task<bool> DeleteAsync(int id)
         {
             var task = await _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
-            if(task == null)
-                throw new NotFoundExecption("Task not found");  
+            if (task == null)
+                throw new NotFoundExecption("Task not found");
             _context.Tasks.Remove(task);
             await _context.SaveChangesAsync();
             return true;
@@ -38,27 +38,27 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
 
         public async Task<List<TaskItem>> GetAllAsync()
         {
-           return await _context.Tasks.ToListAsync();
+            return await _context.Tasks.ToListAsync();
         }
 
         public Task<TaskItem?> GetByIdAsync(int id)
         {
-           return _context.Tasks.FirstOrDefaultAsync(x=>x.Id == id);
+            return _context.Tasks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public Task<int> GetCompletedTaskByUserAsync(int id)
         {
-            return _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.TaskStatus.Completed);
+            return _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.WorkTaskStatus.Completed);
         }
 
         public async Task<int> GetInProgressTaskByUserAsync(int id)
         {
-            return await _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.TaskStatus.InProgress);
+            return await _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.WorkTaskStatus.InProgress);
         }
 
         public async Task<int> GetPendingTaskByUserAsync(int id)
         {
-            return await _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.TaskStatus.pending);
+            return await _context.Tasks.CountAsync(x => x.UserId == id && x.Status == Domain.Enum.WorkTaskStatus.Pending);
         }
 
         public async Task<int> GetTotalTasksByUserAsync(int id)
@@ -75,7 +75,7 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
 
             task.Title = dto.Title;
             task.Description = dto.Description;
-            task.Status = (Domain.Enum.TaskStatus)dto.Status;
+            task.Status = (Domain.Enum.WorkTaskStatus)dto.Status;
             task.Priority = (Domain.Enum.TaskPriority)dto.Priority;
             task.DueDate = dto.DueDate;
             await _context.SaveChangesAsync();
@@ -92,7 +92,7 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
             return await _context.Tasks.CountAsync();
         }
 
-        public async Task<int> GetTaskCountByStatusAsync(Domain.Enum.TaskStatus status)
+        public async Task<int> GetTaskCountByStatusAsync(Domain.Enum.WorkTaskStatus status)
         {
             return await _context.Tasks.CountAsync(x => x.Status == status);
         }
@@ -103,6 +103,21 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
         }
-        
-    }
+
+        public async Task<List<TaskActivity>> GetTaskActivitiesAsync(int taskId)
+        {
+            return await _context.TaskActivities
+                            .Where(x => x.TaskId == taskId)
+                            .Include(x => x.User)
+                            .OrderByDescending(x => x.CreatedDate)
+                            .ToListAsync();
+        }
+
+        public async Task AddActivityAsnyc(TaskActivity activity)
+        {
+            await _context.TaskActivities.AddAsync(activity);
+
+            await _context.SaveChangesAsync();
+        }
+    }   
 }

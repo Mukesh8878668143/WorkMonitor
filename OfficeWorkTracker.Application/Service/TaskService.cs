@@ -5,12 +5,13 @@ using OfficeWorkTracker.Application.Interfaces;
 using OfficeWorkTracker.Domain.Constants;
 using OfficeWorkTracker.Domain.Entities;
 using OfficeWorkTracker.Domain.Enum;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
-using TaskStatus = OfficeWorkTracker.Domain.Enum.TaskStatus;
+using WorkTaskStatus = OfficeWorkTracker.Domain.Enum.WorkTaskStatus;
 
 namespace OfficeWorkTracker.Application.Service
 {
-    
+
     public class TaskService : ITaskService
     {
         private readonly ITaskRespository _taskRespository;
@@ -33,7 +34,7 @@ namespace OfficeWorkTracker.Application.Service
                 Priority = dto.Priority,
                 DueDate = dto.DueDate,
                 UserId = dto.UserId,
-                Status = Domain.Enum.TaskStatus.pending,
+                Status = Domain.Enum.WorkTaskStatus.Pending,
                 CreatedDate = DateTime.UtcNow
             };
 
@@ -42,6 +43,7 @@ namespace OfficeWorkTracker.Application.Service
             if (Useridcheck.Result != null)
             {
                 var createdTask = await _taskRespository.CreateAsync(task);
+                await LogActivityAsync(task.Id, ActivityType.TaskCreated, $"Task '{task.Title}' is created.");
                 return new TaskResponseDto
                 {
                     Id = createdTask.Id,
@@ -56,7 +58,7 @@ namespace OfficeWorkTracker.Application.Service
             }
             else
             {
-               throw new NotFoundExecption("User Not found.");
+                throw new NotFoundExecption("User Not found.");
             }
 
         }
@@ -133,7 +135,7 @@ namespace OfficeWorkTracker.Application.Service
         public async Task<TaskResponseDto> AssignTaskAsync(AssignTaskRequestDto request)
         {
             var user = await _userRepository.GetByIdAsync(request.AssignedToUserID);
-            if(user == null)
+            if (user == null)
             {
                 throw new NotFoundExecption("User not found.");
             }
@@ -145,13 +147,14 @@ namespace OfficeWorkTracker.Application.Service
                 Priority = Enum.Parse<TaskPriority>(request.Priority, true),
                 DueDate = request.DueDate,
                 UserId = request.AssignedToUserID,
-                Status = TaskStatus.pending,
+                Status = WorkTaskStatus.Pending,
                 CreatedDate = DateTime.UtcNow
             };
 
             await _taskRespository.CreateAsync(task);
 
-            return new TaskResponseDto{
+            return new TaskResponseDto
+            {
                 Id = task.Id,
                 Title = task.Title,
                 Description = task.Description,
@@ -163,62 +166,26 @@ namespace OfficeWorkTracker.Application.Service
             };
         }
 
-        Task<TaskResponseDto> ITaskService.CreateTaskAsync(CreateTaskDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> ITaskService.DeleteTaskAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<List<TaskResponseDto>> ITaskService.GetAllTasksAsync()
-        {
-            var tasks = _taskRespository.GetAllAsync().Result;
-
-            return Task.FromResult(tasks.Select(t => new TaskResponseDto
-            {
-                Id = t.Id,
-                Title = t.Title,
-                Description = t.Description,
-                Priority = t.Priority,
-                Status = t.Status,
-                CreatedDate = t.CreatedDate,
-                DueDate = t.DueDate,
-                UserId = t.UserId
-            }).ToList());
-        }
-
-        Task<TaskResponseDto?> ITaskService.GetTaskByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<TaskResponseDto> ITaskService.UpdateTaskAsync(int id, UpdateTaskDto dto)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task UpdateTaskStatusAsync(int taskid, UpdateTaskStatusDto dto)
         {
-            var task =await  _taskRespository.GetByIdAsync(taskid);
+            var task = await _taskRespository.GetByIdAsync(taskid);
             if (task == null)
                 throw new NotFoundExecption("Task not found.");
 
             var currentUserID = _currentUserService.UserId;
             var currentRole = _currentUserService.Role;
 
-            if(currentRole != Roles.Admin && currentRole != Roles.Manager && task.UserId != currentUserID)
+            if (currentRole != Roles.Admin && currentRole != Roles.Manager && task.UserId != currentUserID)
                 throw new UnauthorizedAccessException("You are not authorized to update this task.");
-            task.Status = (TaskStatus)dto.Status;
+            task.Status = (WorkTaskStatus)dto.Status;
+            await LogActivityAsync(taskid, ActivityType.StatusChanged, $"Status changed to {dto.Status}");
             await _taskRespository.UpdateAsync(task);
         }
 
         public async Task AddCommentAsync(int taskId, AddCommentDto request)
         {
             var task = await _taskRespository.GetByIdAsync(taskId);
-            if(task == null)
+            if (task == null)
             {
                 throw new NotFoundExecption($"Task {taskId} not found");
             }
@@ -230,6 +197,40 @@ namespace OfficeWorkTracker.Application.Service
                 CreatedAt = DateTime.UtcNow
             };
             await _taskRespository.AddCommentAsync(comment);
+            await LogActivityAsync(taskId, ActivityType.CommentAdded, request.Comment);
+        }
+
+        public async Task<List<TaskActivityDto>> GetTaskHistoryAsync(int taskid)
+        {
+            var activities = await _taskRespository.GetTaskActivitiesAsync(taskid);
+            return activities.Select(x =>
+                new TaskActivityDto
+                {
+                    ActivityType =
+                        x.ActivityType.ToString(),
+
+                    Description =
+                        x.Description,
+
+                    UserName =
+                        x.User.Email,
+
+                    CreatedDate =
+                        x.CreatedDate
+                }).ToList();
+        }
+
+        private async Task LogActivityAsync(int taskid, ActivityType activityType,string description)
+        {
+            var activity = new TaskActivity
+            {
+                TaskId = taskid,
+                ActivityType = activityType,
+                Description = description,
+                UserId = _currentUserService.UserId,
+                CreatedDate = DateTime.UtcNow
+            };
+            await _taskRespository.AddActivityAsnyc(activity);
         }
     }
 }

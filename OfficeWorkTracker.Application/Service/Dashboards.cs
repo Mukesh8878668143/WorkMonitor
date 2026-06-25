@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TaskStatus = OfficeWorkTracker.Domain.Enum.TaskStatus;
+using WorkTaskStatus = OfficeWorkTracker.Domain.Enum.WorkTaskStatus;
 
 namespace OfficeWorkTracker.Application.Service
 {
@@ -35,21 +35,21 @@ namespace OfficeWorkTracker.Application.Service
             {
                 TotalEmployees = await _userRepository.GetTotalUserCountAsync(),
                 TotalTasks = await _taskRepository.GetTotalTaskCountAsync(),
-                PendingTasks = await _taskRepository.GetTaskCountByStatusAsync(Domain.Enum.TaskStatus.pending),
+                PendingTasks = await _taskRepository.GetTaskCountByStatusAsync(Domain.Enum.WorkTaskStatus.Pending),
                 InProgressTasks =
             await _taskRepository
                 .GetTaskCountByStatusAsync(
-                    TaskStatus.InProgress),
+                    WorkTaskStatus.InProgress),
 
                 CompletedTasks =
             await _taskRepository
                 .GetTaskCountByStatusAsync(
-                    TaskStatus.Completed),
+                    WorkTaskStatus.Completed),
 
                 BlockedTasks =
                 await _taskRepository
                     .GetTaskCountByStatusAsync(
-                        TaskStatus.Blocked)
+                        WorkTaskStatus.Blocked)
             };
         }
     }

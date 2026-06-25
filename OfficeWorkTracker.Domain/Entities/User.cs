@@ -15,5 +15,7 @@ namespace OfficeWorkTracker.Domain.Entities
         public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
 
         public ICollection<TaskComment> Comments { get; set; } = new List<TaskComment>();
+
+        public ICollection<TaskActivity> Activities { get; set; } = new List<TaskActivity>();
     }
 }
