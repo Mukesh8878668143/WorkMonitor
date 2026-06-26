@@ -9,5 +9,7 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<TeamDashboardDto> GetTeamDashboardAsync();
 
         Task<List<EmployerPerformanceDto>> GetEmployerPerformanceAsync();
+
+        Task<List<TopPerformerDto>> GetTopPerformersAsync();
     }
 }

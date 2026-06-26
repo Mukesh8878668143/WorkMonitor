@@ -64,5 +64,16 @@ namespace OfficeWorkTracker.API.Controllers
             result,
             "Employee performance retrieved successfully"));
         }
+
+        [Authorize(Roles = "Admin,Manager")]
+        [HttpGet("top-performaers")]
+        public async Task<IActionResult> GetTopPerformaers()
+        {
+            var result = await _dashboardService.GetTopPerformersAsync();
+            return Ok(
+        ApiResponseFactory.Success(
+            result,
+            "Top performers retrieved successfully"));
+        }
     }
 }

@@ -122,5 +122,27 @@ namespace OfficeWorkTracker.Application.Service
 
             return result;
         }
+
+        public async Task<List<TopPerformerDto>> GetTopPerformersAsync()
+        {
+            var performance = await GetEmployerPerformanceAsync();
+            var ranking = performance
+                           .OrderByDescending(x=>x.CompletionPercentage)
+                           .ThenByDescending(x=>x.CompletedTasks)
+                           .ThenBy(x=>x.OverdueTasks)
+                           .ToList();
+
+            var result = ranking.Select((employess,Index)=> new TopPerformerDto { 
+                Rank = Index+1,
+                UserId = employess.UserId,
+                EmployeeName = employess.EmployeeName,
+                TotalTasks = employess.TotalTasks,
+                CompletedTasks = employess.CompletedTasks,
+                PendingTasks = employess.PendingTasks,
+                OverdueTasks = employess.OverdueTasks,
+                CompletionPercentage = employess.CompletionPercentage
+            }).ToList();
+            return result;
+        }
     }
 }
