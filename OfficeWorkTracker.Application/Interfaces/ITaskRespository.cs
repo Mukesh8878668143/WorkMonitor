@@ -1,4 +1,5 @@
-﻿using OfficeWorkTracker.Application.DTOs.Task;
+﻿using OfficeWorkTracker.Application.Common;
+using OfficeWorkTracker.Application.DTOs.Task;
 using OfficeWorkTracker.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -39,5 +40,6 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task AddActivityAsnyc(TaskActivity activity);
         Task<List<TaskActivity>> GetTaskActivitiesAsync(int taskid);
         Task<List<TaskItem>> GetAllTaskWithUserAsync();
+        Task<PageResponse<TaskResponseDto>> GetFilteredTaskAsync(TaskFilterDto filter);
     }
 }

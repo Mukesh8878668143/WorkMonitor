@@ -29,9 +29,9 @@ namespace OfficeWorkTracker.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllTasks()
+        public async Task<IActionResult> GetAllTasks([FromQuery] TaskFilterDto filter)
         {
-            var result = await _taskService.GetAllTasksAsync();
+            var result = await _taskService.GetFilteredTaskAsync(filter);
             return Ok(result);
         }
 
@@ -107,5 +107,6 @@ namespace OfficeWorkTracker.API.Controllers
             var result = await _taskService.GetTaskHistoryAsync(taskId);
             return Ok(ApiResponseFactory.Success(result, "Task history retrieved successfully"));
         }
+
     }
 }

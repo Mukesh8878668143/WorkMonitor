@@ -1,4 +1,5 @@
-﻿using OfficeWorkTracker.Application.DTOs;
+﻿using OfficeWorkTracker.Application.Common;
+using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.DTOs.Task;
 using OfficeWorkTracker.Application.Exception;
 using OfficeWorkTracker.Application.Interfaces;
@@ -231,6 +232,11 @@ namespace OfficeWorkTracker.Application.Service
                 CreatedDate = DateTime.UtcNow
             };
             await _taskRespository.AddActivityAsnyc(activity);
+        }
+
+        public async Task<PageResponse<TaskResponseDto>> GetFilteredTaskAsync(TaskFilterDto filter)
+        {
+           return await _taskRespository.GetFilteredTaskAsync(filter);
         }
     }
 }

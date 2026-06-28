@@ -1,4 +1,5 @@
-﻿using OfficeWorkTracker.Application.DTOs;
+﻿using OfficeWorkTracker.Application.Common;
+using OfficeWorkTracker.Application.DTOs;
 using OfficeWorkTracker.Application.DTOs.Task;
 using System;
 using System.Collections.Generic;
@@ -28,5 +29,7 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task AddCommentAsync(int taskId, AddCommentDto request);
 
         Task<List<TaskActivityDto>> GetTaskHistoryAsync(int taskid);
+
+        Task<PageResponse<TaskResponseDto>> GetFilteredTaskAsync(TaskFilterDto filter);
     }
 }
