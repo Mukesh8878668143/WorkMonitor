@@ -10,6 +10,7 @@ namespace OfficeWorkTracker.API.Controllers
     public class AuthController : Controller
     {
         private readonly IUserService userService;
+        private readonly IRefreshTokenService refreshTokenService;
 
         public AuthController(IUserService userService)
         {
@@ -25,6 +26,28 @@ namespace OfficeWorkTracker.API.Controllers
                 return Unauthorized();
             }
             return Ok(result);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenDto dto)
+        {
+            var result = await userService.RefreshTokenAsync(dto);
+            if (result == null)
+            {
+                return Unauthorized();
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout([FromBody] LogoutRequestDto dto)
+        {
+            var result = await userService.LogoutAsync(dto);
+            if (!result)
+            {
+                return Unauthorized();
+            }
+            return Ok();
         }
     }
 }

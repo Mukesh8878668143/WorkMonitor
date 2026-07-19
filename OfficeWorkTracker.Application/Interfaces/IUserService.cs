@@ -17,5 +17,7 @@ namespace OfficeWorkTracker.Application.Interfaces
         Task<UserResponseDto> UpdateUserAsync(int id, UpdateUserDto dto);
 
         Task<AuthResponseDto> LoginAsync(LoginDto dto);
+        Task<AuthResponseDto> RefreshTokenAsync(RefreshTokenDto dto);
+        Task<bool> LogoutAsync(LogoutRequestDto dto);
     }
 }

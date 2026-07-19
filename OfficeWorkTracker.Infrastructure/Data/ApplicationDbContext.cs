@@ -19,9 +19,13 @@ namespace OfficeWorkTracker.Infrastructure.Data
 
 		public DbSet<TaskActivity> TaskActivities { get; set; }
 
+        public DbSet<UserRefereshToken> UserRefereshTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
 
             modelBuilder.Entity<TaskActivity>()
                 .HasOne(t => t.Task)

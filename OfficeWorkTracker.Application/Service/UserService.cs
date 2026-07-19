@@ -9,10 +9,17 @@ namespace OfficeWorkTracker.Application.Service
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtTokenServices _jwtTokenService;
-        public UserService(IUserRepository userRepository, IJwtTokenServices jwtTokenService)
+        private readonly IRefreshTokenService _refereshToken;
+        private readonly IUserRefreshTokenRepository _userrefreshTokenRep; 
+        public UserService(IUserRepository userRepository, 
+            IJwtTokenServices jwtTokenService,
+            IRefreshTokenService refreshTokenService,
+            IUserRefreshTokenRepository userrefreshTokenRepository)
         {
             _userRepository = userRepository;
             _jwtTokenService = jwtTokenService;
+            _refereshToken = refreshTokenService;
+            _userrefreshTokenRep = userrefreshTokenRepository;
         }
 
         public async Task<UserResponseDto> CreateUserAsync(CreateUserDto dto)
@@ -21,7 +28,6 @@ namespace OfficeWorkTracker.Application.Service
 
             var user = new User
             {
-                
                 FullName = dto.FullName,
                 Email = dto.Email,
                 Role = "Employees",
@@ -121,13 +127,77 @@ namespace OfficeWorkTracker.Application.Service
             {
                 return null;
             }
-            var token = _jwtTokenService.GenerateToken(user);
+            var accesstoken = _jwtTokenService.GenerateToken(user);
+            var RefereshToken = _refereshToken.GenerateRefreshToken();
+            var refreshToken = new UserRefereshToken
+            {
+                UserID = user.Id,
+                RefereshToken = RefereshToken,
+                CreatedDate = DateTime.UtcNow,
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false
+            };
+            await _userrefreshTokenRep.AddAsync(refreshToken);
+
             return new AuthResponseDto
             {
-                Token = token,
+                AccessToken = accesstoken,
+                RefreshToken = RefereshToken,
+                RefreshTokenExpiry = refreshToken.ExpiryDate,
                 Email = user.Email,
                 Role = user.Role
             };
+        }
+
+        public async Task<AuthResponseDto> RefreshTokenAsync(RefreshTokenDto dto)
+        {
+            var existingToken = await _userrefreshTokenRep.GetByTokenAsync(dto.RefreshToken);
+
+            if(existingToken == null || existingToken.IsRevoked || existingToken.ExpiryDate < DateTime.UtcNow)
+            {
+                return null;
+            }
+            var user = existingToken.user;
+            var newAccessToken = _jwtTokenService.GenerateToken(user);
+            var refreshToken = _refereshToken.GenerateRefreshToken();
+            existingToken.IsRevoked = true;
+            existingToken.ExpiryDate = DateTime.UtcNow;
+            await _userrefreshTokenRep.UpdateAsync(existingToken);
+
+            var refreshTokenEntity = new UserRefereshToken
+            {
+                UserID = user.Id,
+                RefereshToken = refreshToken,
+                CreatedDate = DateTime.UtcNow,
+                ExpiryDate = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false
+            };
+            await _userrefreshTokenRep.AddAsync(refreshTokenEntity);
+
+            return new AuthResponseDto
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = refreshToken,
+                RefreshTokenExpiry = refreshTokenEntity.ExpiryDate,
+                Email = user.Email,
+                Role = user.Role
+            };
+        }
+
+        public async Task<bool> LogoutAsync(LogoutRequestDto dto)
+        {
+            var token = await _userrefreshTokenRep.GetByTokenAsync(dto.RefreshToken);
+            if(token == null)
+            {
+                return false;
+            }
+            if(!token.IsRevoked)
+            {
+                token.IsRevoked = true;
+                token.ExpiryDate = DateTime.UtcNow;
+                await _userrefreshTokenRep.UpdateAsync(token);
+            }
+            return true;
         }
     }
 }
