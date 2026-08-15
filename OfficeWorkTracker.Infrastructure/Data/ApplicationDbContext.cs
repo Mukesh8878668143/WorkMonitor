@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer;
 using Microsoft.EntityFrameworkCore.Design;
 using OfficeWorkTracker.Domain.Entities;
+using System.Reflection.Emit;
 
 namespace OfficeWorkTracker.Infrastructure.Data
 {
@@ -20,6 +21,8 @@ namespace OfficeWorkTracker.Infrastructure.Data
 		public DbSet<TaskActivity> TaskActivities { get; set; }
 
         public DbSet<UserRefereshToken> UserRefereshTokens { get; set; }
+        public DbSet<TimeEntry> TimeEntries { get; set; }
+        public DbSet<TimeEntryBreak> TimeEntryBreaks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,6 +41,18 @@ namespace OfficeWorkTracker.Infrastructure.Data
                .WithMany(x => x.Activities)
                .HasForeignKey(t => t.UserId)
                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TimeEntry>()
+                .HasOne(t => t.User)
+                .WithMany(u => u.TimeEntries)
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TimeEntryBreak>()
+                .HasOne(x => x.TimeEntry)
+                .WithMany(x => x.Breaks)
+                .HasForeignKey(x => x.TimeEntryId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

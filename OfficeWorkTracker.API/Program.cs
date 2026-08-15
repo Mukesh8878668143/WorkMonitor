@@ -27,6 +27,9 @@ builder.Services.AddScoped<IDashboardService, Dashboards>(); // Register IDashbo
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>(); // Register IRefreshTokenService with scoped lifetime and concrete RefreshTokenService
 builder.Services.AddScoped<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
+builder.Services.AddScoped<ITimeEntryService, TimeEntryService>();
+builder.Services.AddScoped<ITimeEntryRepository, TimeEntryRepository>();
+builder.Services.AddScoped<ITimeEntryBreakRepository, TimeEntryBreakRepository>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers().AddJsonOptions(options => {
     options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());

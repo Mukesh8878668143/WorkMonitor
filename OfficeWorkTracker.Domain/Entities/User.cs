@@ -7,9 +7,9 @@ namespace OfficeWorkTracker.Domain.Entities
     public class User
     {
         public int Id { get; set; }
-        public string FullName { get; set; }
-        public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public string? FullName { get; set; }
+        public string? Email { get; set; }
+        public string? PasswordHash { get; set; }
         public string Role { get; set; } = Roles.User;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public ICollection<TaskItem> Tasks { get; set; } = new List<TaskItem>();
@@ -19,5 +19,7 @@ namespace OfficeWorkTracker.Domain.Entities
         public ICollection<TaskActivity> Activities { get; set; } = new List<TaskActivity>();
 
         public ICollection<UserRefereshToken> RefreshTokens { get; set; }   =  new List<UserRefereshToken>();
+
+        public ICollection<TimeEntry> TimeEntries { get; set; } = new List<TimeEntry>();
     }
 }

@@ -38,6 +38,11 @@ namespace OfficeWorkTracker.Infrastructure.Repositories
             return null!;
         }
 
+        public Task SaveChangesAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task UpdateAsync(UserRefereshToken refereshToken)
         {
             _Context.UserRefereshTokens.Update(refereshToken);

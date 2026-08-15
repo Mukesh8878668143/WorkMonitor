@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace OfficeWorkTracker.Application.Interfaces
 {
-    public interface IUserRefreshTokenRepository
+    public interface ITimeEntryBreakRepository
     {
-        Task AddAsync(UserRefereshToken refreshToken);
-
-        Task<UserRefereshToken> GetByTokenAsync(string refreshToken);
-        Task UpdateAsync(UserRefereshToken refereshToken);
+        Task AddAsync(TimeEntryBreak timeEntryBreak);
         Task SaveChangesAsync();
+        Task<TimeEntryBreak> GetActiveBreakAsync(int timeEntryId);
     }
 }

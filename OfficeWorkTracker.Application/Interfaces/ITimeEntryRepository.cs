@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace OfficeWorkTracker.Application.Interfaces
 {
-    public interface IUserRefreshTokenRepository
+    public interface ITimeEntryRepository
     {
-        Task AddAsync(UserRefereshToken refreshToken);
-
-        Task<UserRefereshToken> GetByTokenAsync(string refreshToken);
-        Task UpdateAsync(UserRefereshToken refereshToken);
+        Task<TimeEntry> GetActiveTimeEntryAsync(int id);
+        Task AddAsync(TimeEntry timeEntry);
+        Task UpdateAsync(TimeEntry timeEntry);
         Task SaveChangesAsync();
     }
 }
